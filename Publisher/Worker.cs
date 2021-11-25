@@ -8,18 +8,21 @@ using System.Threading.Tasks;
 using EasyNetQ;
 using SharedLib;
 using EasyNetQ.Topology;
+using Microsoft.Extensions.Logging;
 
 namespace Publisher
 {
     class Worker : BackgroundService
     {
         private IBus _bus;
+        private readonly ILogger<Worker> _logger;
         private readonly Queue _queue;
         //private readonly Exchange _exchange;
 
-        public Worker(IBus bus)
+        public Worker(IBus bus, ILogger<Worker> logger)
         {
             _bus = bus;
+            _logger = logger;
             _queue = new Queue("ExampleQueue");
             _queue.Arguments.Add("x-max-priority", 10);
             //_exchange = new Exchange("RADIO");    //need to create that manually and bind queue to it manually so it will work
@@ -30,7 +33,7 @@ namespace Publisher
             int count = 100;
             while (!stoppingToken.IsCancellationRequested && count-- > 0)
             {
-                Console.WriteLine($"Publishing message {count}");
+                _logger.LogInformation("Publishing message {count}", count);
                 try
                 {
                     var body = new MessageTemplate

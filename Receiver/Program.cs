@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using System;
 
 namespace Receiver
@@ -17,6 +18,8 @@ namespace Receiver
                 {
                     services.AddHostedService<Worker>();
                     services.RegisterEasyNetQ("host=localhost");
-                });
+                })
+            .UseSerilog((hostingContext, loggerConfiguration) => loggerConfiguration
+                            .ReadFrom.Configuration(hostingContext.Configuration));
     }
 }

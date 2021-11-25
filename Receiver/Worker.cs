@@ -25,6 +25,7 @@ namespace Receiver
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("Hello");
             //subscribe to queue. this will also create it if it does not exist
             var sub = await _bus.SendReceive.ReceiveAsync<MessageTemplate>(_queue.Name, OnMessageReceived, x => { }, cancellationToken: stoppingToken);
             //need to register to the dispose of the subscription.
